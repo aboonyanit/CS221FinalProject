@@ -23,5 +23,5 @@ with open(file_name) as f:
 neigh = KNeighborsClassifier(n_neighbors=3)
 neigh.fit(data_x, data_y)
 print(neigh.predict([one_row]))
-# print(data_x)
-# print(data_y)
+print(data_x.shape)
+print(data_y)
