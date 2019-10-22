@@ -2,6 +2,7 @@ import numpy as numpy
 import csv
 from sklearn.neighbors import KNeighborsClassifier
 import pandas
+from sklearn.preprocessing import StandardScaler
 
 file_name = 'student-mat-nograde3.csv'
 
@@ -10,6 +11,12 @@ data_frame = pandas.get_dummies(data_frame)
 print(data_frame)
 #raw_data = open(file_name, 'rt')
 numpy_array = data_frame.values
+
+#using scaler
+scaler = StandardScaler()
+scaler.fit(numpy_array)
+numpy_array = scaler.transform(numpy_array)
+
 print(numpy_array)
 
 file_name = 'student-math.csv'
