@@ -12,7 +12,7 @@ print(data_frame)
 numpy_array = data_frame.values
 print(numpy_array)
 
-file_name = 'student-math_CLEAN.csv'
+file_name = 'student-math.csv'
 one_row = []
 raw_data = open(file_name, 'rt')
 
