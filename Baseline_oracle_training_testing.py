@@ -11,9 +11,9 @@ data_frame_trainingInput = pandas.read_csv(file_name_trainingInput)
 data_frame_trainingInput = pandas.get_dummies(data_frame_trainingInput)
 
 trainingInput = data_frame_trainingInput.values
-scaler_trainingInput = StandardScaler()
-scaler_trainingInput.fit(trainingInput)
-trainingInput = scaler_trainingInput.transform(trainingInput)
+# scaler_trainingInput = StandardScaler()
+# scaler_trainingInput.fit(trainingInput)
+# trainingInput = scaler_trainingInput.transform(trainingInput)
 
 #Training Data Output
 file_name_trainingOutput = 'training_data_OUTPUT.csv'
@@ -37,9 +37,12 @@ data_frame_testInput = pandas.read_csv(file_name_testInput)
 data_frame_testInput = pandas.get_dummies(data_frame_testInput)
 
 testInput = data_frame_testInput.values
-scaler_testInput = StandardScaler()
-scaler_testInput.fit(testInput)
-testInput = scaler_testInput.transform(testInput)
+# scaler_testInput = StandardScaler()
+# scaler_testInput.fit(testInput)
+# testInput = scaler_testInput.transform(testInput)
+
+print("output", trainingOutput.shape)
+print("intpu", trainingInput.shape)
 
 #Testing Data Output
 file_name_testOutput = 'testing_data_OUTPUT.csv'
@@ -56,6 +59,10 @@ with open(file_name_testOutput) as f:
             testOutput.append(0)
     y = list(testOutput)
     testOutput = numpy.array(y).astype('int')    
+
+print("output-test", testOutput.shape)
+print("input-test", testInput.shape)
+
     
 #Binary Classifier
 classifier = SVC(gamma='auto')

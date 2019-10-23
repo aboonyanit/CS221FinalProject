@@ -6,6 +6,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.dummy import DummyClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn import tree
 
 #Training Data Input
 file_name_trainingInput = 'student-mat-nograde3.csv'
@@ -51,6 +53,7 @@ X_train, X_test, y_train, y_test = train_test_split(trainingInput, trainingOutpu
 #Binary Classifier
 sum1 = 0
 sum2 = 0
+sum3 = 0
 count = 1000
 for i in range(1000):
     classifier = DummyClassifier(strategy="stratified")
@@ -62,8 +65,14 @@ for i in range(1000):
     neigh = KNeighborsClassifier(n_neighbors=8)
     neigh.fit(X_train, y_train)
     sum2 += neigh.score(X_test, y_test)
+
+#Decision Tree
+    clf = tree.DecisionTreeClassifier()
+    clf.fit(X_train, y_train)
+    sum3 += clf.score(X_test, y_test)
 average1 = sum1/count
 average2 = sum2/count
+average3 = sum3/count
 print("Binary classifier", average1 )
 print("K means, ", average2 )
-#print(neigh.score(X_test, y_test))
+print("Decision tree", average3)
