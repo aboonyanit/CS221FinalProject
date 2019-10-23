@@ -5,6 +5,7 @@ import pandas
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+from sklearn.dummy import DummyClassifier
 
 #Training Data Input
 file_name_trainingInput = 'student-mat-nograde3.csv'
@@ -32,19 +33,21 @@ with open(file_name_trainingOutput) as f:
             trainingOutput.append(0)
     y = list(trainingOutput)
     trainingOutput = numpy.array(y).astype('int')
+    
+#for baseline
+#X_trainb, X_testb, y_trainb, y_testb = train_test_split(trainingInputb, trainingOutput, test_size=0.3)
+    
+#for oracle    
 
-X_train, X_test, y_train, y_test = train_test_split(trainingInput, trainingOutput, test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(trainingInput, trainingOutput, test_size=0.3)
 
-print(y_train)
-print("test")
-print(y_test)
 
 #Binary Classifier
-classifier = SVC(gamma='auto')
+classifier = DummyClassifier(strategy="stratified")
 classifier.fit(X_train, y_train) 
 print(classifier.score(X_test, y_test))
 
 #Nearest Neighbor
-neigh = KNeighborsClassifier(n_neighbors=4)
+neigh = KNeighborsClassifier(n_neighbors=8)
 neigh.fit(X_train, y_train)
 print(neigh.score(X_test, y_test))
