@@ -27,27 +27,43 @@ with open(file_name_trainingOutput) as f:
     next(reader)
     trainingOutput = []
     for i, row in enumerate(reader):
-        if int(row[len(row) - 1]) > 15:
-            trainingOutput.append(1)
+        if int(row[len(row) - 1]) > 18:
+            trainingOutput.append("A")
+        elif int(row[len(row) - 1]) > 16:
+            trainingOutput.append("B")
+        elif int(row[len(row) - 1]) > 14:
+            trainingOutput.append("C")
+        elif int(row[len(row) - 1]) > 12:
+            trainingOutput.append("D")
         else:
-            trainingOutput.append(0)
+            trainingOutput.append("F")
     y = list(trainingOutput)
-    trainingOutput = numpy.array(y).astype('int')
+    trainingOutput = numpy.array(y).astype(str)
     
 #for baseline
 #X_trainb, X_testb, y_trainb, y_testb = train_test_split(trainingInputb, trainingOutput, test_size=0.3)
     
 #for oracle    
 
-X_train, X_test, y_train, y_test = train_test_split(trainingInput, trainingOutput, test_size=0.3)
+X_train, X_test, y_train, y_test = train_test_split(trainingInput, trainingOutput, test_size=0.2)
 
 
 #Binary Classifier
-classifier = DummyClassifier(strategy="stratified")
-classifier.fit(X_train, y_train) 
-print(classifier.score(X_test, y_test))
+sum1 = 0
+sum2 = 0
+count = 1000
+for i in range(1000):
+    classifier = DummyClassifier(strategy="stratified")
+    classifier.fit(X_train, y_train)
+    sum1 += classifier.score(X_test, y_test)
+#print(classifier.score(X_test, y_test))
 
 #Nearest Neighbor
-neigh = KNeighborsClassifier(n_neighbors=8)
-neigh.fit(X_train, y_train)
-print(neigh.score(X_test, y_test))
+    neigh = KNeighborsClassifier(n_neighbors=8)
+    neigh.fit(X_train, y_train)
+    sum2 += neigh.score(X_test, y_test)
+average1 = sum1/count
+average2 = sum2/count
+print("Binary classifier", average1 )
+print("K means, ", average2 )
+#print(neigh.score(X_test, y_test))
