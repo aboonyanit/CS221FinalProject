@@ -73,6 +73,6 @@ for i in range(1000):
 average1 = sum1/count
 average2 = sum2/count
 average3 = sum3/count
-print("Binary classifier", average1 )
+print("Dummy classifier", average1 )
 print("K means, ", average2 )
 print("Decision tree", average3)
