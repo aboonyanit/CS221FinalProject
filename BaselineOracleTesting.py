@@ -29,14 +29,12 @@ with open(file_name_trainingOutput) as f:
     next(reader)
     trainingOutput = []
     for i, row in enumerate(reader):
-        if int(row[len(row) - 1]) > 18:
+        if int(row[len(row) - 1]) >= 16:
             trainingOutput.append("A")
-        elif int(row[len(row) - 1]) > 16:
+        elif int(row[len(row) - 1]) >= 14:
             trainingOutput.append("B")
-        elif int(row[len(row) - 1]) > 14:
+        elif int(row[len(row) - 1]) >= 10:
             trainingOutput.append("C")
-        elif int(row[len(row) - 1]) > 12:
-            trainingOutput.append("D")
         else:
             trainingOutput.append("F")
     y = list(trainingOutput)
@@ -48,7 +46,6 @@ with open(file_name_trainingOutput) as f:
 #for oracle    
 
 X_train, X_test, y_train, y_test = train_test_split(trainingInput, trainingOutput, test_size=0.2)
-
 
 #Binary Classifier
 sum1 = 0
