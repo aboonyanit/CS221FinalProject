@@ -51,7 +51,7 @@ D = 2 # dimensionality
 K = 3 
 
 # initialize parameters randomly
-W = np.zeros([trainingInput.shape[1], 4])
+W = 0.01 * np.random.rand(trainingInput.shape[1], 4)
 #b =  np.zeros([trainingInput.shape[1], 4]) #??
 
 # some hyperparameters
@@ -60,7 +60,7 @@ reg = 1e-3 # regularization strength
 
 # gradient descent loop
 num_examples = X.shape[0]
-for i in range(0, 200):
+for i in range(0, 500):
   # evaluate class scores, [N x K]
   scores = np.dot(X, W) #changed 
   
@@ -94,7 +94,13 @@ for i in range(0, 200):
   #b += -step_size * db
 
   # evaluate training set accuracy
-  scores = np.dot(X, W)
-  predicted_class = np.argmax(scores, axis=1)
-  print("predicted_class", predicted_class)
+scores = np.dot(X, W)
+predicted_class = np.argmax(scores, axis=1)
+print("predicted_class", predicted_class)
+correct_predictions = 0
+for i, prediction in enumerate(predicted_class):
+  if prediction == trainingOutput[i]:
+    correct_predictions += 1
+print("correct pred", correct_predictions)
+print("percent", correct_predictions / len(predicted_class))
 print ('training accuracy: %.2f', (np.mean(predicted_class == y)))
