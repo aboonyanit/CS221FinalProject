@@ -22,6 +22,7 @@ from eli5.sklearn import PermutationImportance
 from eli5.permutation_importance import get_score_importances
 from sklearn.ensemble import RandomForestClassifier
 from collections import defaultdict
+import datetime
 
 #Training Data Input
 file_name_trainingInput = 'student-mat-nograde3.csv'
@@ -52,11 +53,18 @@ with open(file_name_trainingOutput) as f:
             trainingOutput.append(3)
     y = list(trainingOutput)
     trainingOutput = numpy.array(y).astype(np.int)
+    
 
 trainingInput, testInput, trainingOutput, testOutput = train_test_split(trainingInput, trainingOutput, test_size=0.2)
 
 train_dataset = tf.data.Dataset.from_tensor_slices((trainingInput, trainingOutput))
 test_dataset = tf.data.Dataset.from_tensor_slices((testInput, testOutput))
+
+current_time = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+train_log_dir = 'logs/gradient_tape/' + current_time + '/train'
+test_log_dir = 'logs/gradient_tape/' + current_time + '/test'
+train_summary_writer = tf.summary.create_file_writer(train_log_dir)
+test_summary_writer = tf.summary.create_file_writer(test_log_dir)
 
 BATCH_SIZE = 64
 SHUFFLE_BUFFER_SIZE = 100
@@ -87,31 +95,46 @@ optimizer = tf.keras.optimizers.Adam(learning_rate=0.01)
 #Keep results for plotting
 train_loss_results = []
 train_accuracy_results = []
-
-for epoch in range(201):
+EPOCHS = 24
+for epoch in range(EPOCHS):
   #one epoch is when entire dataset is passed forward and backward through the neural net once. 
   #since one epoch too big to feed, diviede into smaller batches
-  epoch_loss_avg = tf.keras.metrics.Mean()
-  epoch_accuracy = tf.keras.metrics.SparseCategoricalAccuracy()
+    epoch_loss_avg = tf.keras.metrics.Mean()
+    epoch_accuracy = tf.keras.metrics.SparseCategoricalAccuracy()
+    epoch_test_loss_avg = tf.keras.metrics.Mean()
+    epoch_test_accuracy = tf.keras.metrics.SparseCategoricalAccuracy()
 
-  # Training loop - using batches of 64
-  for x, y in train_dataset:
-    # Optimize the model
-    loss_value, grads = grad(model, x, y)
-    optimizer.apply_gradients(zip(grads, model.trainable_variables))
-    # Track progress
-    epoch_loss_avg(loss_value)  # Add current batch loss
-    # Compare predicted label to actual label
-    epoch_accuracy(y, model(x))
+    # Training loop - using batches of 64
+    for x, y in train_dataset:
+        # Optimize the model
+        loss_value, grads = grad(model, x, y)
+        optimizer.apply_gradients(zip(grads, model.trainable_variables))
+        # Track progress
+        epoch_loss_avg(loss_value)  # Add current batch loss
+        # Compare predicted label to actual label
+        epoch_accuracy(y, model(x))
+    for x, y in test_dataset:
+        predictions = model(x)
+        loss_value, grads = grad(model, x, y)
+        #loss = loss_object(y, predictions) #crashing here??
+        epoch_test_loss_avg(loss_value)
+        epoch_test_accuracy(y, predictions)
+    with test_summary_writer.as_default():
+        tf.summary.scalar('test loss', epoch_test_loss_avg.result(), step=epoch)
+        tf.summary.scalar('test accuracy', epoch_test_accuracy.result(), step=epoch)
+        tf.summary.scalar('training loss', epoch_loss_avg.result(), step=epoch)
+        tf.summary.scalar('training accuracy', epoch_accuracy.result(), step=epoch)
 
-  # End epoch
-  train_loss_results.append(epoch_loss_avg.result())
-  train_accuracy_results.append(epoch_accuracy.result())
+    # End epoch
+    train_loss_results.append(epoch_loss_avg.result())
+    train_accuracy_results.append(epoch_accuracy.result())
 
-  if epoch % 50 == 0:
-    print("Epoch {:03d}: Loss: {:.3f}, Accuracy: {:.3%}".format(epoch,
-                                                                epoch_loss_avg.result(),
-                                                                epoch_accuracy.result()))
+    if epoch % 50 == 0:
+        print("Epoch {:03d}: Loss: {:.3f}, Accuracy: {:.3%}, Test Loss: {:.3f}, Test Accuracy: {:.3%}".format(epoch,
+                                                                    epoch_loss_avg.result(),
+                                                                    epoch_accuracy.result(),
+                                                                    epoch_test_loss_avg.result(),
+                                                                    epoch_test_accuracy.result()))
     #print("Grads", grads)
 
 
