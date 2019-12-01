@@ -14,7 +14,6 @@ file_name_trainingInput = 'student-mat-nograde3.csv'
 data_frame_trainingInput = pandas.read_csv(file_name_trainingInput)
 data_frame_trainingInput = pandas.get_dummies(data_frame_trainingInput)
 
-
 trainingInput = data_frame_trainingInput.values
 scaler_trainingInput = StandardScaler()
 scaler_trainingInput.fit(trainingInput)
