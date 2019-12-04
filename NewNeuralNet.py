@@ -206,6 +206,7 @@ def neural_network():
   optimizer = tf.keras.optimizers.Adam(learning_rate=0.01)
 
   ## Note: Rerunning this cell uses the same model variables
+  #https://towardsdatascience.com/building-our-first-neural-network-in-keras-bdc8abbc17f5 explains valdiation test set
 
   #Keep results for plotting
   train_loss_results = []
